@@ -3,6 +3,8 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
+from gestures import recognize_hand_gesture
+
 hand_connections = [
     (0, 1), (1, 2), (2, 3), (3, 4),
     (0, 5), (5, 6), (6, 7), (7, 8),
@@ -50,7 +52,7 @@ def main():
                 if result.handedness and len(result.handedness) > hand_idx:
                     hand_side = result.handedness[hand_idx][0].category_name
 
-                print(f"Hand #{hand_idx} ({hand_side}):")
+                #print(f"Hand #{hand_idx} ({hand_side}):")
 
                 for connection in hand_connections:
                     start_idx, end_idx = connection
@@ -67,8 +69,13 @@ def main():
                     y_px = int(lm.y * height)
                     cv2.circle(frame, (x_px, y_px), 5, points_color, -1)
 
+                gesture = recognize_hand_gesture(landmarks)
+                if gesture:
+                    print(f"Gesture: {gesture}")
+                '''
                 for j, lm in enumerate(landmarks):
                     print(f"  Landmark {j:2d}: x={lm.x:.3f}, y={lm.y:.3f}, z={lm.z:.3f}")
+                '''
 
         cv2.imshow("Camera", frame)
 
